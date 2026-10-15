@@ -1,4 +1,8 @@
+"""Animación del ejercicio de cinemática con Manim Community."""
+
 from manim import *
+
+from cinematica import encuentros_ab, posicion_a as xA, posicion_b as xB, posicion_c as xC
 
 class ProyectoCompleto(Scene):
     def crear_auto(self, color=BLUE):
@@ -453,6 +457,8 @@ class ProyectoCompleto(Scene):
             run_time=1.0
         )
 
+        # Retirar objetos ya invisibles sin modificar tiempos ni aspecto.
+        self.remove(panel_b, flecha_der_b, etiqueta_der_b, texto_b)
         self.play(FadeIn(panel_c, shift=RIGHT * 0.4), run_time=1.1)
         self.play(GrowArrow(flecha_der_c), FadeIn(etiqueta_der_c, shift=UP * 0.1), run_time=0.9)
         self.wait(2.8)
@@ -584,10 +590,12 @@ class ProyectoCompleto(Scene):
             alto=3.7
         ).move_to(DOWN * 0.15)
 
+        t_encuentro = encuentros_ab()[0]
+        x_encuentro = xA(t_encuentro)
         panel_posicion = self.crear_panel(
             "Punto de encuentro",
             BLUE,
-            [r"x_A(1.93)=25(1.93)", r"\boxed{x\approx48.25\,m}"],
+            [r"x_A(t_1)=25t_1", rf"\boxed{{x\approx{x_encuentro:.2f}\,m}}"],
             ancho=5.8,
             alto=3.2
         ).move_to(DOWN * 0.25)
@@ -631,7 +639,7 @@ class ProyectoCompleto(Scene):
         ).move_to(DOWN * 0.55)
 
         resultado_final = MathTex(
-            r"\boxed{A\ \text{alcanza a}\ B\ \text{en}\ t\approx1.93\,s,\ x\approx48.25\,m}",
+            rf"\boxed{{A\ \text{{alcanza a}}\ B\ \text{{en}}\ t\approx{t_encuentro:.2f}\,s,\ x\approx{x_encuentro:.2f}\,m}}",
             font_size=34,
             color=YELLOW
         ).move_to(caja_final.get_center())
@@ -840,15 +848,6 @@ class ProyectoCompleto(Scene):
             Text("150 m", font_size=18, color=GRAY_A).next_to(eje.n2p(150), DOWN, buff=0.25),
             Text("225 m", font_size=18, color=GRAY_A).next_to(eje.n2p(225), DOWN, buff=0.25),
         )
-
-        def xA(t):
-            return 25 * t
-
-        def xB(t):
-            return 60 - 10 * t + 2 * t**2
-
-        def xC(t):
-            return 150 + 6 * t**2 - (2/3) * t**3
 
         t = ValueTracker(0)
 

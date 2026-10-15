@@ -1,0 +1,28 @@
+name: Pruebas de cinemática y renderizado
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Instalar dependencias del sistema
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-dev build-essential pkg-config libcairo2-dev libpango1.0-dev ffmpeg dvisvgm texlive-latex-base texlive-latex-extra texlive-fonts-recommended
+      - name: Instalar Manim
+        run: python -m pip install -r requirements.txt
+      - name: Comprobar resultados físicos
+        run: python -m unittest discover -s tests -v
+      - name: Renderizar la escena completa para comprobar ejecución
+        run: python -m manim -ql --resolution 426,240 --fps 5 --disable_caching simulacion_cinematica.py ProyectoCompleto
